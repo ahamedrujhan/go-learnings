@@ -27,7 +27,21 @@ func getBalanceFormFile() (float64, error) {
 func writeBalanceToFile(balance float64) {
 	balanceText := fmt.Sprint(balance)
 
-	os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
+	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
+
+	if err != nil {
+		panic("Failed to write balance to file")
+	}
+}
+
+func printBalance(balance float64) {
+	balanceText := fmt.Sprint(balance)
+	fmt.Println("Your account balance is ", balanceText)
+}
+
+func getAccountBalance(balance float64) {
+	writeBalanceToFile(balance)
+	printBalance(balance)
 }
 
 func main() {
@@ -50,13 +64,7 @@ func main() {
 	fmt.Println("Welcome To The Bank!")
 
 	for {
-		//showing the options
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Check Your Balance")
-		fmt.Println("2. Deposit Money")
-		fmt.Println("3. Widthdraw Money")
-		fmt.Println("4 . Exit")
-
+		presentOptions()
 		//get the choice
 		fmt.Println("Enter Your Choice: ")
 		fmt.Scan(&choice)
@@ -64,9 +72,8 @@ func main() {
 		//switch statements
 		switch choice {
 		case 1:
-			fmt.Println("Your account balance is: ", accountBalance)
-			writeBalanceToFile(accountBalance)
-			continue
+			getAccountBalance(accountBalance)
+			//continue
 		case 2:
 			fmt.Println("Enter Ammount to deposit")
 			var depositAmount float64
@@ -78,11 +85,10 @@ func main() {
 			}
 
 			accountBalance += depositAmount
-			fmt.Println("Your account balance is ", accountBalance)
-			writeBalanceToFile(accountBalance)
+			getAccountBalance(accountBalance)
 
 		case 3:
-			fmt.Println("Enter amount to widthdraw money")
+			fmt.Println("Enter amount to withdraw money")
 			var widthdrawAmount float64
 			fmt.Scan(&widthdrawAmount)
 
@@ -92,12 +98,11 @@ func main() {
 			}
 
 			if widthdrawAmount > accountBalance {
-				fmt.Println("Can't widthdraw. widthdraw ammount is larger than account balance")
+				fmt.Println("Can't withdraw. withdraw amount is larger than account balance")
 				continue
 			}
 			accountBalance -= widthdrawAmount
-			fmt.Println("Your new account balance is ", accountBalance)
-			writeBalanceToFile(accountBalance)
+			getAccountBalance(accountBalance)
 
 		default:
 			fmt.Println("GoodBye!")
