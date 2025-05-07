@@ -1,52 +1,25 @@
 package main
 
 import (
-	"errors"
+	"com.example/fileOps"
 	"fmt"
-	"os"
-	"strconv"
 )
 
 const accountBalanceFile = "balance.txt"
-
-func getBalanceFormFile() (float64, error) {
-	data, err := os.ReadFile(accountBalanceFile)
-	// error handling if the balance.txt not found
-	if err != nil {
-		return 1000, errors.New("Balance.txt not found!")
-	}
-	balanceText := string(data)
-	balance, err := strconv.ParseFloat(balanceText, 64)
-	// error handling if the float conversion found
-	if err != nil {
-		return 1000, errors.New("Failed to parse balance value from balance.txt")
-	}
-	return balance, nil
-}
-
-func writeBalanceToFile(balance float64) {
-	balanceText := fmt.Sprint(balance)
-
-	err := os.WriteFile(accountBalanceFile, []byte(balanceText), 0644)
-
-	if err != nil {
-		panic("Failed to write balance to file")
-	}
-}
 
 func printBalance(balance float64) {
 	balanceText := fmt.Sprint(balance)
 	fmt.Println("Your account balance is ", balanceText)
 }
 
-func getAccountBalance(balance float64) {
-	writeBalanceToFile(balance)
+func getAccountBalance(balance float64, fileName string) {
+	fileOps.WriteValueFromFile(balance, fileName)
 	printBalance(balance)
 }
 
 func main() {
 	//account balance
-	accountBalance, err := getBalanceFormFile()
+	accountBalance, err := fileOps.GetValueFromFile(accountBalanceFile)
 
 	if err != nil {
 		fmt.Println("ERROR")
@@ -72,7 +45,7 @@ func main() {
 		//switch statements
 		switch choice {
 		case 1:
-			getAccountBalance(accountBalance)
+			getAccountBalance(accountBalance, accountBalanceFile)
 			//continue
 		case 2:
 			fmt.Println("Enter Ammount to deposit")
@@ -85,7 +58,7 @@ func main() {
 			}
 
 			accountBalance += depositAmount
-			getAccountBalance(accountBalance)
+			getAccountBalance(accountBalance, accountBalanceFile)
 
 		case 3:
 			fmt.Println("Enter amount to withdraw money")
@@ -102,7 +75,7 @@ func main() {
 				continue
 			}
 			accountBalance -= widthdrawAmount
-			getAccountBalance(accountBalance)
+			getAccountBalance(accountBalance, accountBalanceFile)
 
 		default:
 			fmt.Println("GoodBye!")
