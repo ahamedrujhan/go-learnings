@@ -11,7 +11,15 @@ func main() {
 
 	for _, taxVal := range taxValue {
 		fm := fileManager.New("prices.txt", fmt.Sprintf("result_%.0f.json", taxVal*100))
+		//cmd := cmdManager.New()
+		//job := prices.NewTaxIncludedPriceJob(cmd, taxVal)
 		job := prices.NewTaxIncludedPriceJob(fm, taxVal)
-		job.Process()
+		err := job.Process()
+
+		if err != nil {
+			fmt.Println("Could not process job.")
+			fmt.Println(err)
+			return
+		}
 	}
 }
