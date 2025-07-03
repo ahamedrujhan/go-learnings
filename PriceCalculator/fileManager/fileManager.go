@@ -32,13 +32,16 @@ func (fm FileManager) ReadLines() ([]string, error) {
 
 	err = scanner.Err()
 
+	// it will automatically call when outer function is finish
+	defer file.Close()
+
 	if err != nil {
 		fmt.Println(err)
-		file.Close()
+		//file.Close()
 		return nil, errors.New("Failed to read the file content")
 	}
 
-	file.Close()
+	//file.Close()
 	return lines, nil
 }
 
@@ -50,16 +53,19 @@ func (fm FileManager) WriteData(data interface{}) error {
 		return errors.New("Failed to create file")
 	}
 
+	// it will automatically call when the outer function is finished.
+	defer file.Close()
+
 	// Json encorder
 	encorder := json.NewEncoder(file)
 	err = encorder.Encode(data)
 
 	if err != nil {
-		file.Close()
+		//file.Close()
 		return errors.New("Failed to convert data to JSON.")
 	}
 
-	file.Close()
+	//file.Close()
 	return nil
 }
 
