@@ -2,7 +2,6 @@ package routes
 
 import (
 	"Event_Management/models"
-	"Event_Management/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -18,8 +17,6 @@ func getEvents(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
-	// get the jwt from token
-	token := context.Request.Header.Get("Authorization")
 	// parse the json from request body
 	var event models.Event
 	err := context.ShouldBindJSON(&event)
@@ -29,12 +26,7 @@ func createEvent(context *gin.Context) {
 		return
 	}
 	// get user id from token
-	userId, err := utils.GetUserIdFromToken(token)
-
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
-		return
-	}
+	userId := context.GetInt64("user_id")
 	// bind the user id extracted from token to event
 	event.UserID = int(userId)
 

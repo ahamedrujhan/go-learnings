@@ -7,16 +7,18 @@ import (
 
 func RegisterRoutes(server *gin.Engine) {
 
-	// get all events
-	server.GET("/events", getEvents)
-	// create event
-	server.POST("/events", middlewares.Authenticate, createEvent)
-	// get event by id
-	server.GET("/events/:id", getEventById)
-	// update event by id
-	server.PUT("/events/:id", updateEventById)
-	// delete the event by id
-	server.DELETE("/events/:id", deleteEventById)
+	// authentication route group
+	authRoutes := server.Group("/")
+	// pass the middleware
+	authRoutes.Use(middlewares.Authenticate)
+	// add the routes
+	authRoutes.GET("/events", getEvents)
+	authRoutes.POST("/events", middlewares.GetUserIdFromToken, createEvent)
+	authRoutes.GET("/events/:id", getEventById)
+	authRoutes.PUT("/events/:id", updateEventById)
+	authRoutes.DELETE("/events/:id", deleteEventById)
+
+	// public routes
 	// signup
 	server.POST("/signup", signUp)
 	// login

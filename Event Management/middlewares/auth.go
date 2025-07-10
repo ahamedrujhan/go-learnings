@@ -35,3 +35,17 @@ func Authenticate(context *gin.Context) {
 	context.Next()
 
 }
+
+func GetUserIdFromToken(context *gin.Context) {
+	token := context.Request.Header.Get("Authorization")
+
+	userId, err := utils.GetUserIdFromToken(token)
+
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	context.Set("user_id", userId)
+	context.Next()
+}
