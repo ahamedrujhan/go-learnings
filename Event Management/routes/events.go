@@ -2,6 +2,7 @@ package routes
 
 import (
 	"Event_Management/models"
+	"Event_Management/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -17,8 +18,27 @@ func getEvents(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
+
+	// validate jwt
+	token := context.Request.Header.Get("Authorization")
+
+	// if token not exist in header
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized."})
+		return
+	}
+
+	// if token exist verify the token
+
+	err := utils.VerifyToken(token)
+
+	if err != nil {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token."})
+		return
+	}
+
 	var event models.Event
-	err := context.ShouldBindJSON(&event)
+	err = context.ShouldBindJSON(&event)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data"})
