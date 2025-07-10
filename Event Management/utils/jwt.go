@@ -18,17 +18,19 @@ func GenarateToken(userId int64, email string) (string, error) {
 	return token.SignedString([]byte(secretKey))
 }
 
+func KeyFunc(token *jwt.Token) (interface{}, error) {
+	// check the token signing method
+	_, ok := token.Method.(*jwt.SigningMethodHMAC)
+
+	if !ok {
+		return nil, errors.New("invalid signing method.")
+	}
+
+	return []byte(secretKey), nil
+}
+
 func VerifyToken(token string) error {
-	parseToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		// check token signing method
-		_, ok := token.Method.(*jwt.SigningMethodHMAC)
-
-		if !ok {
-			return nil, errors.New("Unexpected signing method")
-		}
-
-		return []byte(secretKey), nil
-	})
+	parseToken, err := jwt.Parse(token, KeyFunc)
 
 	if err != nil {
 		errors.New("Colud not parse token")
@@ -55,4 +57,27 @@ func VerifyToken(token string) error {
 	// token is verified
 	return nil
 
+}
+
+func GetUserIdFromToken(token string) (int64, error) {
+	parseToken, err := jwt.Parse(token, KeyFunc)
+
+	if err != nil {
+		return 0, errors.New("could not parse token.")
+	}
+	claims, ok := parseToken.Claims.(jwt.MapClaims)
+
+	if !ok {
+		return 0, errors.New("could not parse token claims")
+	}
+
+	userId, ok := claims["userId"]
+
+	if !ok {
+		return 0, errors.New("could not parse token claims userId")
+	}
+
+	userIdInt64 := int64(userId.(float64))
+
+	return userIdInt64, nil
 }

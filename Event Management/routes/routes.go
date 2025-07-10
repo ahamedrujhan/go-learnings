@@ -1,13 +1,16 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"Event_Management/middlewares"
+	"github.com/gin-gonic/gin"
+)
 
 func RegisterRoutes(server *gin.Engine) {
 
 	// get all events
 	server.GET("/events", getEvents)
 	// create event
-	server.POST("/events", createEvent)
+	server.POST("/events", middlewares.Authenticate, createEvent)
 	// get event by id
 	server.GET("/events/:id", getEventById)
 	// update event by id

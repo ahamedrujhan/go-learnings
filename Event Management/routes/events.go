@@ -18,32 +18,26 @@ func getEvents(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
-
-	// validate jwt
+	// get the jwt from token
 	token := context.Request.Header.Get("Authorization")
-
-	// if token not exist in header
-	if token == "" {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Not authorized."})
-		return
-	}
-
-	// if token exist verify the token
-
-	err := utils.VerifyToken(token)
-
-	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token."})
-		return
-	}
-
+	// parse the json from request body
 	var event models.Event
-	err = context.ShouldBindJSON(&event)
+	err := context.ShouldBindJSON(&event)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Could not parse request data"})
 		return
 	}
+	// get user id from token
+	userId, err := utils.GetUserIdFromToken(token)
+
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+	// bind the user id extracted from token to event
+	event.UserID = int(userId)
+
 	err = event.Save()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not save event"})
