@@ -3,6 +3,7 @@ package models
 import (
 	"Event_Management/db"
 	"Event_Management/utils"
+	"errors"
 )
 
 type User struct {
@@ -45,4 +46,27 @@ INSERT INTO users (email, password) VALUES (?, ?)`
 
 	return err
 
+}
+
+func (u User) ValidateCredentials() error {
+	query := `
+SELECT id, password FROM users WHERE email = ?`
+	row := db.DB.QueryRow(query, u.Email)
+
+	var retrivedPassword string
+	err := row.Scan(&u.ID, &retrivedPassword)
+
+	if err != nil {
+		// invalid email
+		return errors.New("Invalid email or password")
+	}
+
+	isValidPassword := utils.CheckPasswordHash(u.Password, retrivedPassword)
+
+	if !isValidPassword {
+		// invalid password
+		return errors.New("Invalid email or password")
+	}
+
+	return nil
 }
