@@ -50,4 +50,19 @@ CREATE TABLE IF NOT EXISTS events (
 	if err != nil {
 		panic("Could not create events table.")
 	}
+
+	createRegistationsTable := `
+CREATE TABLE IF NOT EXISTS registrations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER,
+    user_id INTEGER,
+    FOREIGN KEY (event_id) REFERENCES events(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    )`
+
+	_, err = DB.Exec(createRegistationsTable)
+
+	if err != nil {
+		panic("Could not create events table.")
+	}
 }
