@@ -10,10 +10,10 @@ func RegisterRoutes(server *gin.Engine) {
 	// authentication route group
 	authRoutes := server.Group("/")
 	// pass the middleware
-	authRoutes.Use(middlewares.Authenticate)
+	authRoutes.Use(middlewares.Authenticate, middlewares.GetUserIdFromToken)
 	// add the routes
 	authRoutes.GET("/events", getEvents)
-	authRoutes.POST("/events", middlewares.GetUserIdFromToken, createEvent)
+	authRoutes.POST("/events", createEvent)
 	authRoutes.GET("/events/:id", getEventById)
 	authRoutes.PUT("/events/:id", updateEventById)
 	authRoutes.DELETE("/events/:id", deleteEventById)

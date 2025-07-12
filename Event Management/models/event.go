@@ -75,7 +75,7 @@ SELECT * FROM events WHERE id=?`
 	return &event, nil
 }
 
-func (e Event) Update() error {
+func (e *Event) Update() error {
 	query := `
 UPDATE events 
 SET name=?, description=?, location=?, datetime=?, user_id=?

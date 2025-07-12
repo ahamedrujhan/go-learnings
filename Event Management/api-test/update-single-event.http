@@ -1,8 +1,9 @@
-PUT http://localhost:8080/events/7
+PUT http://localhost:8080/events/11
 content-type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQGV4YW1wbGUuY29tIiwiZXhwIjoxNzUyMzQ1MzY0LCJ1c2VySWQiOjJ9.YVJl3Ztt1rJ-DtPTn6A-R_7Se5JJI2K_vseScmkMXP4
 
 {
-  "name": "update event",
+  "name": "updated 11th event",
   "description": "A update event",
   "location": "A update location",
   "dateTime": "2025-10-05T14:53:00.000Z"
