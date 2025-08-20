@@ -1,7 +1,6 @@
 # Go Learnings
 
-> Collection of Go language learning projects by Ahamed Rujhan
-
+> Collection of Go language learning projects
 ##  Overview
 
 This repository is a compilation of Go programming exercises and projects aimed at reinforcing learning and showcasing practical use cases. Topics include:
